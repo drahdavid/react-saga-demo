@@ -23,10 +23,9 @@ function* fetchUsers(action) {
     }
 }
 
-function* userSagaListener() {
+export default function* userSagaListener() {
     yield takeEvery('GET_USERS_REQUESTED', fetchUsers)
 
 }
 
 
-export default userSagaListener;

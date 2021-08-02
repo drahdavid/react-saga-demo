@@ -10,7 +10,7 @@ function getApi() {
 };
 
 
-function* fetchPosts(action) {
+function* fetchPosts() {
     try {
 
         const users = yield call(getApi);
@@ -23,10 +23,9 @@ function* fetchPosts(action) {
     }
 }
 
-function* postsSagaListener() {
+export default function* postsSagaListener() {
     yield takeEvery('GET_POSTS_REQUESTED', fetchPosts)
 
 }
 
 
-export default postsSagaListener;
