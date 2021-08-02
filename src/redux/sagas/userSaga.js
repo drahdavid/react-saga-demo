@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, delay, put, takeEvery, takeLatest } from 'redux-saga/effects';
 
 const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
@@ -10,9 +10,9 @@ function getApi() {
 };
 
 
-function* fetchUsers(action) {
+function* fetchUsers() {
     try {
-
+        yield delay(2000)
         const users = yield call(getApi);
 
         yield put({ type: 'GET_USERS_SUCCESS', users: users });
@@ -24,7 +24,8 @@ function* fetchUsers(action) {
 }
 
 export default function* userSagaListener() {
-    yield takeEvery('GET_USERS_REQUESTED', fetchUsers)
+
+    yield takeLatest('GET_USERS_REQUESTED', fetchUsers)
 
 }
 

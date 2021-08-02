@@ -1,4 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
+import { call, put, delay, takeLatest } from 'redux-saga/effects';
 
 const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
 
@@ -12,7 +12,7 @@ function getApi() {
 
 function* fetchPosts() {
     try {
-
+        yield delay(2000)
         const users = yield call(getApi);
 
         yield put({ type: 'GET_POSTS_SUCCESS', users: users });
@@ -24,7 +24,7 @@ function* fetchPosts() {
 }
 
 export default function* postsSagaListener() {
-    yield takeEvery('GET_POSTS_REQUESTED', fetchPosts)
+    yield takeLatest('GET_POSTS_REQUESTED', fetchPosts)
 
 }
 

@@ -28,9 +28,7 @@ const Users = () => {
     console.log(users);
 
     useEffect(() => {
-        setTimeout(() => {
-            dispatch(getUsers())
-        }, 1000);
+        dispatch(getUsers())
         dispatch(getPosts());
     }, []);
 
