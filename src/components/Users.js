@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { getUsers } from "../redux/actions/users-actions";
+import { getUsers, stopSearching } from "../redux/actions/users-actions";
 import { getPosts } from '../redux/actions/posts-actions';
 import { filterPostsTitle } from "./helpers/filterPostsTitle";
 import { unifiedProps } from "./helpers/unifiedProps";
@@ -28,7 +28,7 @@ const Users = () => {
     console.log(users);
 
     useEffect(() => {
-        dispatch(getUsers())
+        dispatch(getUsers());
         dispatch(getPosts());
     }, []);
 
@@ -37,20 +37,26 @@ const Users = () => {
 
     return (
         <>
-            {loadingUsers && loadingPosts &&
+            {loadingUsers && <button className="btn btn-success" onClick={() => dispatch(stopSearching())}>CANCEL ME</button>}
+            {
+                loadingUsers && loadingPosts &&
                 <div class="alert alert-success" role="alert">
                     Loading...
                 </div>
             }
 
-            {users.length > 0 && users.map((user) => {
-                return <Card posts={posts} title={user.title} user={user} key={user.id} />
-            })}
+            {
+                users.length > 0 && users.map((user) => {
+                    return <Card posts={posts} title={user.title} user={user} key={user.id} />
+                })
+            }
 
-            {users.length <= 0 && !loadingUsers && !loadingPosts &&
+            {
+                users.length <= 0 && !loadingUsers && !loadingPosts &&
                 <div class="alert alert-danger" role="alert">
                     No Users Available!
-                </div>}
+                </div>
+            }
             {errorUsers && errorPosts && !loadingUsers && !loadingPosts && <p>{errorUsers}</p>}
         </>
 

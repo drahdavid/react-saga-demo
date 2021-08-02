@@ -6,3 +6,9 @@ export function getUsers() {
         type: type.GET_USERS_REQUESTED,
     }
 }
+
+export function stopSearching() {
+    return {
+        type: 'STOP_BACKGROUND_SYNC',
+    }
+}

@@ -31,6 +31,14 @@ export default function users(
                 error: action.message
             }
 
+        case 'STOP_BACKGROUND_SYNC':
+            return {
+                ...state,
+                loading: false,
+                error: action.message
+            }
+
+
         default:
             return state;
     }

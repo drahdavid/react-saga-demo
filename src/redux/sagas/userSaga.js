@@ -1,4 +1,4 @@
-import { call, delay, put, takeEvery, takeLatest } from 'redux-saga/effects';
+import { call, delay, put, takeEvery, takeLatest, cancelled, cancel, take } from 'redux-saga/effects';
 
 const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
@@ -18,14 +18,20 @@ function* fetchUsers() {
         yield put({ type: 'GET_USERS_SUCCESS', users: users });
 
     }
-    catch (err) {
-        yield put({ type: 'GET_USERS_FAILED', message: err.message });
+    finally {
+        if (yield cancelled())
+            yield put({ type: 'GET_USERS_FAILED', message: 'Error' });
     }
+
 }
 
 export default function* userSagaListener() {
 
-    yield takeLatest('GET_USERS_REQUESTED', fetchUsers)
+    yield takeLatest('GET_USERS_REQUESTED', fetchUsers);
+
+    yield take('STOP_BACKGROUND_SYNC');
+
+    yield cancel(fetchUsers);
 
 }
 
