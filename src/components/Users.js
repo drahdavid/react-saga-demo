@@ -1,66 +1,63 @@
-
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { getUsers, stopSearching } from "../redux/actions/users-actions";
-import { getPosts } from '../redux/actions/posts-actions';
+import { getPosts } from "../redux/actions/posts-actions";
 import { filterPostsTitle } from "./helpers/filterPostsTitle";
 import { unifiedProps } from "./helpers/unifiedProps";
 
 import Card from "./Card";
 
 const Users = () => {
+  const dispatch = useDispatch();
 
-    const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
+  const loadingUsers = useSelector((state) => state.users.loading);
+  const errorUsers = useSelector((state) => state.users.error);
 
-    const users = useSelector(state => state.users.users);
-    const loadingUsers = useSelector(state => state.users.loading);
-    const errorUsers = useSelector(state => state.users.error);
+  const posts = useSelector((state) => state.posts.users);
+  const loadingPosts = useSelector((state) => state.posts.loading);
+  const errorPosts = useSelector((state) => state.posts.error);
 
+  const filteredPosts = posts && filterPostsTitle(posts);
 
-    const posts = useSelector(state => state.posts.users);
-    const loadingPosts = useSelector(state => state.posts.loading);
-    const errorPosts = useSelector(state => state.posts.error)
+  unifiedProps(users, filteredPosts);
 
-    const filteredPosts = posts && filterPostsTitle(posts);
+  useEffect(() => {
+    dispatch(getUsers());
+    dispatch(getPosts());
+  }, []);
 
-    unifiedProps(users, filteredPosts); // Agrego propiedades de filteredPosts a users para renderizar a través de 1 array
-
-    console.log(users);
-
-    useEffect(() => {
-        dispatch(getUsers());
-        dispatch(getPosts());
-    }, []);
-
-
-
-
-    return (
-        <>
-            {loadingUsers && <button className="btn btn-success" onClick={() => dispatch(stopSearching())}>CANCEL ME</button>}
-            {
-                loadingUsers && loadingPosts &&
-                <div class="alert alert-success" role="alert">
-                    Loading...
-                </div>
-            }
-
-            {
-                users.length > 0 && users.map((user) => {
-                    return <Card posts={posts} title={user.title} user={user} key={user.id} />
-                })
-            }
-
-            {
-                users.length <= 0 && !loadingUsers && !loadingPosts &&
-                <div class="alert alert-danger" role="alert">
-                    No Users Available!
-                </div>
-            }
-            {errorUsers && errorPosts && !loadingUsers && !loadingPosts && <p>{errorUsers}</p>}
-        </>
-
-    )
+  return (
+    <>
+      {loadingUsers && (
+        <button
+          className="btn btn-success"
+          onClick={() => dispatch(stopSearching())}
+        >
+          Click to stop search
+        </button>
+      )}{" "}
+      {loadingUsers && loadingPosts && (
+        <div class="alert alert-success" role="alert">
+          Loading...
+        </div>
+      )}
+      {users.length > 0 &&
+        users.map((user) => {
+          return (
+            <Card posts={posts} title={user.title} user={user} key={user.id} />
+          );
+        })}
+      {users.length <= 0 && !loadingUsers && !loadingPosts && (
+        <div class="alert alert-danger" role="alert">
+          No Users Available!
+        </div>
+      )}
+      {errorUsers && errorPosts && !loadingUsers && !loadingPosts && (
+        <p>{errorUsers}</p>
+      )}
+    </>
+  );
 };
 
 export default Users;
